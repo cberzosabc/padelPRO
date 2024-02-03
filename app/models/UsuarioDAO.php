@@ -34,7 +34,7 @@ class UsuarioDAO{
         if(!$stmt=$this->conn->prepare("INSERT INTO usuarios (nombre, email, password, foto, sid) VALUES (?,?,?,?,?)")){
             die("Error al preparar la consulta insert: " .$this->conn->error);
         }
-
+        $nombre=$usuario->getNombre();
         $email=$usuario->getEmail();
         $password=$usuario->getPassword();
         $foto=$usuario->getFoto();
@@ -45,5 +45,22 @@ class UsuarioDAO{
         }else{
             return false;
         }
+    }
+    public function getBySid($sid){
+        $stmt = $this->conn->prepare("SELECT * FROM usuarios WHERE sid = ?");
+        $stmt->bind_param('s', $sid);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($result->num_rows > 0){
+            return $result->fetch_object(Usuario::class);
+        } else {
+            return null;
+        }
+    }
+    
+    public function actualizarSid($idUsuario, $sid){
+        $stmt = $this->conn->prepare("UPDATE usuarios SET sid = ? WHERE id = ?");
+        $stmt->bind_param('si', $sid, $idUsuario);
+        $stmt->execute();
     }
 }

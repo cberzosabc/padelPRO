@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -7,13 +8,21 @@
     <title>Padel pro</title>
   </head>
   <body class="login-body">
+  <?php if(isset($_SESSION['mensaje_error'])): ?>
+			<p class="error"><?= $_SESSION['mensaje_error']; ?></p>
+			<?php unset($_SESSION['mensaje_error']); ?>
+			<?php endif; ?>
 <div class="container" id="container">
+
 	<div class="form-container sign-up-container">
-	<form action="index.php?accion=registrar" method="POST">
-			<h1>Create Account</h1>
+	<form action="index.php?accion=registrar" method="POST" enctype="multipart/form-data">
+			<h1>Crea tu cuenta</h1>
 			<input type="text" placeholder="Nombre" name="name"/>
 			<input type="email" placeholder="Email" name="email"/>
 			<input type="password" placeholder="Password" name="password"/>
+			<p>Selecciona una foto de perfil:</p>
+            <input type="file" name="foto" accept="image/jpeg, image/webp, image/png"><br>
+
 			<button>Sign Up</button>
 		</form>
 	</div>
@@ -25,16 +34,17 @@
 			<button>Entrar</button>
 		</form>
 	</div>
+	
 	<div class="overlay-container">
 		<div class="overlay">
 			<div class="overlay-panel overlay-left">
-				<h1>Welcome Back!</h1>
-				<p>To keep connected with us please login with your personal info</p>
+				<h1>¿Ya te has registrado?</h1>
+				<p>Mantente conectado para encontrar los mejores horarios</p>
 				<button class="ghost" id="signIn">Sign In</button>
 			</div>
 			<div class="overlay-panel overlay-right">
-				<h1>Hello, Friend!</h1>
-				<p>Enter your personal details and start journey with us</p>
+				<h1>¡Hola!</h1>
+				<p>Regístrate y reserva tu pista de pádel hoy mismo</p>
 				<button class="ghost" id="signUp">Sign Up</button>
 			</div>
 		</div>

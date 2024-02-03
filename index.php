@@ -11,7 +11,7 @@ require_once 'app/models/TramoDAO.php';
 require_once 'app/models/Session.php';
 require_once 'app/controllers/ControladorUsuarios.php';
 require_once 'app/controllers/ControladorReservas.php';
-
+require_once 'app/config/functions.php';
 session_start();
 
 $mapa = array(
@@ -27,6 +27,9 @@ $mapa = array(
     'ver_fechas'=>array('controlador'=>'ControladorReservas',
                     'metodo'=>'ver_fechas',
                     'privada'=>false),
+    'logout'=>array('controlador'=>'ControladorUsuarios', 
+                    'metodo'=>'logout', 
+                    'privada'=>true),
 );
 
 //Parseo de la ruta
@@ -44,24 +47,17 @@ if(isset($_GET['accion'])){ //Compruebo si me han pasado una acción concreta, s
     $accion='inicio';   //Acción por defecto
 }
 
-//Si existe la cookie y no ha iniciado sesión, le iniciamos sesión de forma automática
-//if( !isset($_SESSION['email']) && isset($_COOKIE['sid'])){
-if( !Session::existeSesion() && isset($_COOKIE['sid'])){
-    //Conectamos con la bD
-    $connexionDB = new ConnectionDB(MYSQL_USER,MYSQL_PASS,MYSQL_HOST,MYSQL_DB);
-    $conn = $connexionDB->getConnection();
-    
-    //Nos conectamos para obtener el id y la foto del usuario
-    $usuariosDAO = new UsuarioDAO($conn);
-    if($usuario = $usuariosDAO->getBySid($_COOKIE['sid'])){
-        //$_SESSION['email']=$usuario->getEmail();
-        //$_SESSION['id']=$usuario->getId();
-        //$_SESSION['foto']=$usuario->getFoto();
-        Sesion::iniciarSesion($usuario);
+if(!Session::existeSesion() && isset($_COOKIE['sid'])){
+    $sid = $_COOKIE['sid'];
+    $usuario = $usuarioDAO->getBySid($sid);
+    if($usuario != null){
+        Session::iniciarSesion($usuario);
+        // Opcionalmente redirigir al usuario a una página interna
+    } else {
+        // La cookie 'sid' no coincide con ningún usuario, posiblemente porque expiró en la base de datos o fue manipulada.
+        setcookie('sid', '', time() - 3600, "/"); // Borra la cookie
     }
-    
 }
-
 //Si la acción es privada compruebo que ha iniciado sesión, sino, lo echamos a index
 // if(!isset($_SESSION['email']) && $mapa[$accion]['privada']){
 if(!Session::existeSesion() && $mapa[$accion]['privada']){
@@ -78,3 +74,5 @@ $metodo = $mapa[$accion]['metodo'];
 //Ejecutamos el método de la clase controlador
 $objeto = new $controlador();
 $objeto->$metodo();
+
+

@@ -9,8 +9,6 @@ class Usuario{
     private $sid;
 
     
-
-
     /**
      * Get the value of id
      */
