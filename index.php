@@ -30,6 +30,9 @@ $mapa = array(
     'logout'=>array('controlador'=>'ControladorUsuarios', 
                     'metodo'=>'logout', 
                     'privada'=>true),
+    'horas_disponibles'=>array('controlador'=>'ControladorReservas',
+                                'metodo'=>'horas_disponibles',
+                                'privada'=>false),
 );
 
 //Parseo de la ruta
@@ -47,8 +50,9 @@ if(isset($_GET['accion'])){ //Compruebo si me han pasado una acción concreta, s
     $accion='inicio';   //Acción por defecto
 }
 
-if(!Session::existeSesion() && isset($_COOKIE['sid'])){
+/* if(!Session::existeSesion() && isset($_COOKIE['sid'])){
     $sid = $_COOKIE['sid'];
+
     $usuario = $usuarioDAO->getBySid($sid);
     if($usuario != null){
         Session::iniciarSesion($usuario);
@@ -57,7 +61,7 @@ if(!Session::existeSesion() && isset($_COOKIE['sid'])){
         // La cookie 'sid' no coincide con ningún usuario, posiblemente porque expiró en la base de datos o fue manipulada.
         setcookie('sid', '', time() - 3600, "/"); // Borra la cookie
     }
-}
+} */
 //Si la acción es privada compruebo que ha iniciado sesión, sino, lo echamos a index
 // if(!isset($_SESSION['email']) && $mapa[$accion]['privada']){
 if(!Session::existeSesion() && $mapa[$accion]['privada']){

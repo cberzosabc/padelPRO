@@ -78,37 +78,37 @@ class ControladorUsuarios{
         }  
 
 
-    public function login(){
-        //Volvemos a crear la conexion
-        $conexion=new ConnectionDB(MYSQL_USER,MYSQL_PASS,MYSQL_HOST,MYSQL_DB);
-        $conn=$conexion->getConnection();
-        //Limpia los datos
-        if($_SERVER['REQUEST_METHOD']=='POST'){
-        $email=htmlentities($_POST['email']);
-        $password=htmlentities($_POST['password']);
+        public function login(){
+            //Volvemos a crear la conexion
+            $conexion=new ConnectionDB(MYSQL_USER,MYSQL_PASS,MYSQL_HOST,MYSQL_DB);
+            $conn=$conexion->getConnection();
+            //Limpia los datos
+            if($_SERVER['REQUEST_METHOD']=='POST'){
+            $email=htmlentities($_POST['email']);
+            $password=htmlentities($_POST['password']);
 
-        //Valida el usuario 
-        $usuarioDAO=new UsuarioDAO($conn);
-        $usuario=$usuarioDAO->getByEmail($email);
-        if($usuario != null){
-            
-            if(password_verify($password, $usuario->getPassword())){
-                $sid = sha1(uniqid(rand(), true)); // Genera un nuevo SID aquí
-                $usuarioDAO->actualizarSid($usuario->getId(), $sid); // Actualiza el SID en la base de datos
+            //Valida el usuario 
+            $usuarioDAO=new UsuarioDAO($conn);
+            $usuario=$usuarioDAO->getByEmail($email);
+            if($usuario != null){
                 
-                // Establece la cookie 'sid' con el nuevo SID
-                setcookie('sid', $sid, time() + (86400 * 30), "/"); // Expira en 30 días
-                
-                Session::iniciarSesion($usuario);
-                header('location: index.php?accion=ver_fechas');
+                if(password_verify($password, $usuario->getPassword())){
+                    $sid = sha1(uniqid(rand(), true)); // Genera un nuevo SID aquí
+                    $usuarioDAO->actualizarSid($usuario->getId(), $sid); // Actualiza el SID en la base de datos
+                    
+                    // Establece la cookie 'sid' con el nuevo SID
+                    setcookie('sid', $sid, time() + (86400 * 30), "/"); // Expira en 30 días
+                    
+                    Session::iniciarSesion($usuario);
+                    header('location: index.php?accion=ver_fechas');
+                }else{
+                    mostrarMensaje("La contraseña no es correcta");
+                }
             }else{
-                mostrarMensaje("La contraseña no es correcta");
+                mostrarMensaje("Usuario no encontrado");
             }
-        }else{
-            mostrarMensaje("Usuario no encontrado");
         }
     }
-}
 
 public function logout(){
     // Crear la conexión a la base de datos
