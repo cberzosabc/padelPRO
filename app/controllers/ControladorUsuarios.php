@@ -10,7 +10,7 @@ class ControladorUsuarios{
 
     public function registrar(){
         $error='';
-
+        $fotoPredeterminada = 'imagen-por-defecto.png'; //cremos una foto predeterminada por si el usuario no selecciona una
         if($_SERVER['REQUEST_METHOD']=='POST'){
 
             //Limpiamos los datos
@@ -35,26 +35,19 @@ class ControladorUsuarios{
             } elseif(strlen($password) < 6) {
                 mostrarMensaje("La contraseña debe tener, al menos, 6 dígitos");
             }else{
-                            //Copiamos la foto al disco
-        if($_FILES['foto']['type'] != 'image/jpeg' &&
-        $_FILES['foto']['type'] != 'image/webp' &&
-        $_FILES['foto']['type'] != 'image/png')
-        {
-            mostrarMensaje("la foto no tiene el formato admitido, debe ser jpeg o webp");
-        }
-        else{
-            //Calculamos un hash para el nombre del archivo
-            $foto = generarNombreArchivo($_FILES['foto']['name']);
-
-            //Si existe un archivo con ese nombre volvemos a calcular el hash
-            while(file_exists("fotosUsuarios/$foto")){
+                if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0 && 
+                in_array($_FILES['foto']['type'], ['image/jpeg', 'image/webp', 'image/png'])) {
+                
+                // Procesamiento de la foto subida
                 $foto = generarNombreArchivo($_FILES['foto']['name']);
+                if (!move_uploaded_file($_FILES['foto']['tmp_name'], "web/fotosUsuarios/$foto")) {
+                    mostrarMensaje("Error al copiar la foto a la carpeta fotosUsuarios");
+                    $foto = $fotoPredeterminada; // Usa la imagen predeterminada si falla
+                }
+            } else {
+                // Si no se sube una foto, asigna la predeterminada
+                $foto = $fotoPredeterminada;
             }
-            
-            if(!move_uploaded_file($_FILES['foto']['tmp_name'], "web/fotosUsuarios/$foto")){
-                die("Error al copiar la foto a la carpeta fotosUsuarios");
-            }
-        }
                     //Insertamos en la BD
 
                     $usuario = new Usuario();
@@ -67,6 +60,8 @@ class ControladorUsuarios{
                     $usuario->setSid(sha1(rand()+time()), true);
     
                     if($usuariosDAO->insert($usuario)){
+                        $idUsuario = $conn->insert_id; //Forzamos que inserte un id al usuario y no salga a null
+                        $usuario->setId($idUsuario); 
                         Session::iniciarSesion($usuario);
                         header("location: index.php?accion=ver_fechas");
                         die();

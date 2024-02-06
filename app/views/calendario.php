@@ -85,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(response => response.json())
             .then(data => {
-                alert(data.mensaje);
                 inputFecha.dispatchEvent(new Event('change')); // Recargar tramos
             })
 

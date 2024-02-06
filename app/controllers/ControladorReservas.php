@@ -45,9 +45,9 @@ class ControladorReservas{
         //Llamamos al método insertar en ReservaDAO, pasándole el objeto que acabamos de crear
         $reservaDAO=new ReservaDAO($conn);
         if($reservaDAO->insertar($reserva)){
-            echo json_encode(['mensaje'=>"La reserva para la fecha ".$fecha." ha sido realizada con éxito"]);
+            echo json_encode(['success'=>true]);
         }else{
-            echo json_encode(['mensaje'=>"La reserva para la fecha ".$fecha." no ha podido ser realizada"]);
+            echo json_encode(['success'=>false]);
         }
     }
 
@@ -68,11 +68,12 @@ class ControladorReservas{
         $reserva->setIdTramo($idTramo);
         $reserva->setFecha($fecha);
 
+        //Preparamos los datos para la cancelación 
         $reservaDAO=new ReservaDAO($conn);
-        if($reservaDAO->eliminar($reserva)){
-            echo json_encode(['mensaje'=>"La reserva para la fecha ".$fecha." ha sido cancelada"]);
+         if($reservaDAO->eliminar($reserva)){
+            echo json_encode(['success'=>true]);
         }else{
-            echo json_encode(['mensaje'=>"La reserva para la fecha ".$fecha." no ha podido ser cancelada"]);
+            echo json_encode(['success'=>false]);
         }
     }
 }
