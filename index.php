@@ -26,13 +26,19 @@ $mapa = array(
                     'privada'=>false),
     'ver_fechas'=>array('controlador'=>'ControladorReservas',
                     'metodo'=>'ver_fechas',
-                    'privada'=>false),
+                    'privada'=>true),
     'logout'=>array('controlador'=>'ControladorUsuarios', 
                     'metodo'=>'logout', 
                     'privada'=>true),
     'horas_disponibles'=>array('controlador'=>'ControladorReservas',
                                 'metodo'=>'horas_disponibles',
-                                'privada'=>false),
+                                'privada'=>true),
+    'reservar'=>array('controlador'=>'ControladorReservas',
+                        'metodo'=>'reservar',
+                        'privada'=>true),
+    'cancelar'=>array('controlador'=>'ControladorReservas',
+                        'metodo'=>'cancelar',
+                        'privada'=>true),
 );
 
 //Parseo de la ruta

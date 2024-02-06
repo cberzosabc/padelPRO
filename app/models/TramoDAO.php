@@ -6,36 +6,32 @@ class TramoDAO{
     public function __construct($conn){
         $this->conn=$conn;
     }
-    public function obtenerTodosLosTramos($fecha) {
-        // Crear un array para almacenar los objetos Tramo
+
+    public function obtenerTramosConDisponibilidad($fecha,$idUsuario) {
         $tramos = [];
-        // Preparar la consulta SQL para seleccionar todos los tramos
-        if (!$stmt = $this->conn->prepare("SELECT t.id, t.hora FROM tramos t 
-        WHERE NOT EXISTS (
-            SELECT 1 FROM reservas r 
-            WHERE r.id_tramo = t.id 
-            AND r.fecha = ?
-        ) 
-        ORDER BY t.hora ASC")) {
-            echo "Error en la SQL: " . $this->conn->error;
-            return $tramos; // Retorna el array vacío en caso de error
+        $query = "SELECT t.id, t.hora,
+                         (SELECT COUNT(*) FROM reservas r WHERE r.id_tramo = t.id AND r.fecha = ?) as reservado,
+                         (SELECT COUNT(*) FROM reservas r WHERE r.id_tramo = t.id AND r.fecha = ? AND r.id_usuario = ?) as reservado_por_usuario
+                  FROM tramos t
+                  ORDER BY t.hora ASC";
+                  
+        if ($stmt = $this->conn->prepare($query)) {
+            $stmt->bind_param("ssi", $fecha, $fecha, $idUsuario);
+            $stmt->execute();
+            $result = $stmt->get_result();
+    
+            while ($fila = $result->fetch_assoc()) {
+                $tramo = [
+                    'id' => $fila['id'],
+                    'hora' => $fila['hora'],
+                    'disponible' => $fila['reservado'] == 0,
+                    'reservado_por_usuario' => $fila['reservado_por_usuario'] > 0
+                ];
+                $tramos[] = $tramo;
+            }
         }
-    
-        $stmt->bind_param("s", $fecha); // Añade esta línea
-        $stmt->execute();
-    
-        // Obtener el resultado de la consulta
-        $result = $stmt->get_result();
-    
-        // Iterar sobre los resultados y crear objetos Tramo
-        while ($fila = $result->fetch_assoc()) {
-            $tramo = new Tramo();
-            $tramo->setId($fila['id']);
-            $tramo->setHora($fila['hora']);
-            $tramos[] = $tramo;
-        }
-        // Devolver el array de objetos Tramo
         return $tramos;
     }
+    
     
 }

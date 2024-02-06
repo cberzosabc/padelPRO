@@ -14,19 +14,65 @@ class ControladorReservas{
         $connection = new ConnectionDB(MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_DB);
         $conn = $connection->getConnection();
         header('Content-Type: application/json');
+
+        $idUsuario=Session::getUsuario()->getId();
+        
         $fecha=$_GET['fecha'];
         $tramoDAO=new TramoDAO($conn);
-        $tramos=$tramoDAO->obtenerTodosLosTramos($fecha);
+        $tramos=$tramoDAO->obtenerTramosConDisponibilidad($fecha, Session::getUsuario()->getId());
 
-        $tramosArray = []; 
-        foreach ($tramos as $tramo) {
-            $tramosArray[] = [
-                'hora' => $tramo->getHora(),
-                'disponible' => true 
-            ];
+        echo json_encode($tramos);
+    }
+
+    public function reservar(){
+        $connection = new ConnectionDB(MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_DB);
+        $conn = $connection->getConnection();
+
+        //Como recibe los datos como json:
+        $data=json_decode(file_get_contents('php://input'),true);
+
+        //Ahora recogemos los valores
+        $idUsuario=Session::getUsuario()->getId();
+        $idTramo=$data['idTramo'];
+        $fecha=$data['fecha'];
+
+        //Cremos la reserva que le vamos a pasar
+        $reserva=new Reserva();
+        $reserva->setIdUsuario($idUsuario);
+        $reserva->setIdTramo($idTramo);
+        $reserva->setFecha($fecha);
+
+        //Llamamos al método insertar en ReservaDAO, pasándole el objeto que acabamos de crear
+        $reservaDAO=new ReservaDAO($conn);
+        if($reservaDAO->insertar($reserva)){
+            echo json_encode(['mensaje'=>"La reserva para la fecha ".$fecha." ha sido realizada con éxito"]);
+        }else{
+            echo json_encode(['mensaje'=>"La reserva para la fecha ".$fecha." no ha podido ser realizada"]);
         }
-    
+    }
 
-        echo json_encode($tramosArray);
+    public function cancelar(){
+        $connection = new ConnectionDB(MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_DB);
+        $conn = $connection->getConnection();
+
+        //Como recibe los datos por json 
+        $data=json_decode(file_get_contents('php://input'),true);
+
+        //Ahora recogemos los valores
+        $idUsuario=Session::getUsuario()->getId();
+        $idTramo=$data['idTramo'];
+        $fecha=$data['fecha'];
+
+        $reserva=new Reserva();
+        $reserva->setIdUsuario($idUsuario);
+        $reserva->setIdTramo($idTramo);
+        $reserva->setFecha($fecha);
+
+        $reservaDAO=new ReservaDAO($conn);
+        if($reservaDAO->eliminar($reserva)){
+            echo json_encode(['mensaje'=>"La reserva para la fecha ".$fecha." ha sido cancelada"]);
+        }else{
+            echo json_encode(['mensaje'=>"La reserva para la fecha ".$fecha." no ha podido ser cancelada"]);
+        }
     }
 }

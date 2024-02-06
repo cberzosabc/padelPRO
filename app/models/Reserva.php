@@ -4,6 +4,7 @@ class Reserva{
     private $id;
     private $idUsuario;
     private $idTramo;
+    private $fecha;
     
 
     /**
@@ -57,6 +58,21 @@ class Reserva{
     {
         $this->idTramo = $idTramo;
 
+        return $this;
+    }
+
+    /**
+     * Get the value of fecha
+     */
+    public function getFecha() {
+        return $this->fecha;
+    }
+
+    /**
+     * Set the value of fecha
+     */
+    public function setFecha($fecha): self {
+        $this->fecha = $fecha;
         return $this;
     }
 }
