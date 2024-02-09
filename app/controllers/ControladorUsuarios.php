@@ -5,6 +5,10 @@ class ControladorUsuarios{
                 //Creamos la conexión utilizando la clase que hemos creado
                 $connexionDB = new ConnectionDB(MYSQL_USER,MYSQL_PASS,MYSQL_HOST,MYSQL_DB);
                 $conn = $connexionDB->getConnection();
+                if(Session::existeSesion()){
+                    header('location: index.php?accion=ver_fechas');
+                    die();
+                }
                 require 'app/views/inicio.php';
     }
 

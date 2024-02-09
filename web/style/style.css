@@ -17,6 +17,9 @@
 		font-family: 'Montserrat', sans-serif;
 		height: 100vh;
 		margin: -20px 0 50px;
+		background-image: url('../images/back.jpg');
+		background-repeat: no-repeat;
+		overflow: hidden;
 	}
 
 	.login-body h1 {
@@ -58,6 +61,7 @@
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		transition: transform 80ms ease-in;
+		
 	}
 
 	.login-body button:active {
@@ -247,12 +251,16 @@
 		flex-flow: column;
 		align-items: center;
 		font-family: "Poppins", serif;
-		background:#FFFFFF;
+		background-image: url('../images/background.jpg');
+		
 
 	}
 	.body-calendario .titulo-calendario {
 		font-weight: 800;
 		margin: 1rem 0 0;
+	}
+	.titulo-calendario{
+		color: #fefefe;
 	}
 
 	.body-calendario ul {
@@ -303,6 +311,7 @@
     background-color: #f6f5f7; /* Utiliza un color de fondo coherente con el diseño del sitio */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Añade una ligera sombra para dar profundidad */
     margin: 20px 0; /* Separa el header del contenido debajo */
+	opacity: .6;
 }
 
 .myaccount, .logout {
@@ -332,4 +341,96 @@
     height: 50px;
     border-radius: 50%;
 	margin-right: 40px;
+	
 }
+input{
+	margin-top: 20px;
+}
+
+table{
+	width: 600px;
+	text-align: center;
+	margin-top: 40px;
+	border-collapse: collapse;
+}
+
+thead{
+	border-radius: 35px;
+}
+td{
+	border: 1px solid rgb(193, 193, 193);
+	margin: 0;
+	height: 40px;
+}
+
+
+
+tr:first-child{
+	font-weight: bold;
+	background-color: #FF416C;
+}
+tr:nth-child(n+2) td:first-child {
+	background-color: #f2f2f2; /* Gris muy claro */
+  }
+.tablaHoras{
+	width: 600px;
+}
+
+.modal {
+	display: none; /* Oculto por defecto */
+	position: fixed; /* Fijo en toda la pantalla */
+	z-index: 1; /* Sitúa el modal sobre todo */
+	left: 0;
+	top: 0;
+	width: 100%; /* Ancho completo */
+	height: 100%; /* Altura completa */
+	overflow: auto; /* Habilita el scroll si es necesario */
+	background-color: rgb(0,0,0); /* Color de fondo */
+	background-color: rgba(0,0,0,0.4); /* Negro con opacidad */
+  }
+  
+  .modal-content {
+	background-color: #fefefe;
+	margin: 15% auto; /* 15% desde arriba y centrado horizontalmente */
+	padding: 0 20px 20px 20px;
+	border: 1px solid #888;
+	width: 30%; /* Puede ajustarse */
+  }
+  
+  .close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+	top: 8px;
+  }
+  
+  .close:hover,
+  .close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+  }
+  #confirmarAccion{
+	background-color: #FF416C;
+	border: none;
+	padding:10px;
+	border-radius: 20px;
+	font-weight: bold;
+	margin: 0 65px;
+  }
+
+  #confirmarAccion:hover{
+	background-color: #FF4B2B;
+  }
+  
+  #confirmarAccion, #cancelarAccion {
+	margin-top: 20px;
+	cursor: pointer;
+  }
+
+  #modalTexto{
+	text-align: center;
+	padding-top: 25px;
+  }
+  
