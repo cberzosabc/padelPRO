@@ -417,7 +417,7 @@ tr:nth-child(n+2) td:first-child {
 	padding:10px;
 	border-radius: 20px;
 	font-weight: bold;
-	margin: 0 65px;
+	margin: 0 55px;
   }
 
   #confirmarAccion:hover{
@@ -434,3 +434,6 @@ tr:nth-child(n+2) td:first-child {
 	padding-top: 25px;
   }
   
+  .preloader-gif{
+	width: 125px;	
+  }
